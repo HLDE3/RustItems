@@ -12,8 +12,10 @@ ru\hld\rustitems\RustItems.class
 ru\hld\rustitems\events\RegisterRustItemsEvent.class
 ru\hld\rustitems\items\ammunition\PistolAmmo.class
 ru\hld\rustitems\items\ammunition\Ammunition.class
+ru\hld\rustitems\menu\api\icons\ActionIcon.class
 ru\hld\rustitems\items\ammunition\Ammunition$Bullet.class
 ru\hld\rustitems\events\PlayerTickEvent$Post.class
+ru\hld\rustitems\items\ammunition\Ammunition$1.class
 ru\hld\rustitems\items\weapons\Gun$1.class
 ru\hld\rustitems\items\CoolDownedRustItem.class
 ru\hld\rustitems\items\weapons\Gun.class
@@ -28,6 +30,7 @@ ru\hld\rustitems\menu\api\Menu.class
 ru\hld\rustitems\items\ammunition\RiffleAmmo.class
 ru\hld\rustitems\menu\api\Menu$1.class
 ru\hld\rustitems\events\RustItemEvent$Tick$Pre.class
+ru\hld\rustitems\utils\PlayerUtil$1.class
 ru\hld\rustitems\utils\PlayerUtil.class
 ru\hld\rustitems\items\RustItemManager.class
 ru\hld\rustitems\items\weapons\AssaultRiffle.class

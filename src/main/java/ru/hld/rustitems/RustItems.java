@@ -2,6 +2,7 @@ package ru.hld.rustitems;
 
 import com.destroystokyo.paper.event.server.ServerTickEndEvent;
 import com.destroystokyo.paper.event.server.ServerTickStartEvent;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,13 +31,6 @@ public final class RustItems extends JavaPlugin implements Listener {
 
     @Override
     public void onDisable() {
-    }
-
-    @EventHandler
-    public void onJoin(PlayerJoinEvent e) {
-        for(RustItem rustItem : getRustItemManager().getRustItems()) {
-            e.getPlayer().getInventory().addItem(rustItem.create());
-        }
     }
 
     @EventHandler

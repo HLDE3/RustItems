@@ -29,13 +29,13 @@ public class Gun extends Weapon {
         this.reloadingTime = reloadingTime;
         addValue("max ammo", maxAmmo);
         addValue("ammo", maxAmmo);
-        addValue("damage", damage);
+        addValue("damage", damage * 5);
     }
 
     @EventHandler
     public void onDrop(PlayerDropItemEvent event) {
         ItemStack itemStack = event.getItemDrop().getItemStack();
-        if(equals(itemStack) && isHeldItem(event.getPlayer())) {
+        if(equals(itemStack) && !equals(event.getPlayer().getInventory().getItemInMainHand()) && isHeldItem(event.getPlayer())) {
             event.setCancelled(true);
             if(!isReloading(event.getPlayer()) && getAmmo(itemStack) < getMaxAmmo(itemStack)) reload(itemStack, event.getPlayer());
         }
@@ -43,7 +43,7 @@ public class Gun extends Weapon {
 
     @EventHandler
     public void onJump(PlayerJumpEvent event) {
-        if(isHeldItem(event.getPlayer())) coolDown(event.getPlayer(), .5f);
+        if(isHeldItem(event.getPlayer())) coolDown(event.getPlayer(), .5f, false);
     }
 
     @Override
@@ -58,17 +58,18 @@ public class Gun extends Weapon {
         int ammo = getAmmo(itemStack);
 
         Vector recoil = getRecoil(player);
-        Vector recoilModifier = getNextRecoil(itemStack).multiply(player.isSneaking() ? .5 : 1);
+        Vector recoilModifier = getNextRecoil(itemStack).multiply(player.isSneaking() ? .75 : 1).multiply(player.isSprinting() ? 1.25f : 1);
 
         player.getInventory().setItemInMainHand(setAmmo(itemStack, ammo - 1));
-        getCurrentAmmunition(itemStack).shoot(player, (float) recoil.getX(), (float) recoil.getY(), getDamage(itemStack));
+        Ammunition ammunition = getCurrentAmmunition(itemStack);
+        ammunition.shoot(player, (float) recoil.getX(), (float) recoil.getY(), getDamage(itemStack), ammunition.getVelocity(ammunition.create()));
 
         recoil.add(recoilModifier);
     }
 
 
     public void reload(ItemStack itemStack, Player player) {
-        coolDown(player, getReloadingTime());
+        coolDown(player, getReloadingTime(), false);
         reloadingPlayers.add(player);
         new BukkitRunnable() {
             @Override
@@ -90,18 +91,16 @@ public class Gun extends Weapon {
 
     public void tick(Player player) {
         super.tick(player);
-        getRecoil(player).multiply(.95);
+
+        getRecoil(player).multiply(isAttacking(player) ? .95 : .85);
+
         if(isHeldItem(player) && (player.getFallDistance() > 1
                 || player.getWorld().getBlockAt(player.getLocation().add(0, player.getEyeHeight(), 0)).isLiquid()
-                || player.getWorld().getBlockAt(player.getLocation()).isLiquid() && !player.isOnGround())) coolDown(player, .1f);
+                || player.getWorld().getBlockAt(player.getLocation()).isLiquid() && !player.isOnGround())) coolDown(player, .1f, false);
     }
     public void heldOff(Player player) {
         super.heldOff(player);
         reloadingPlayers.remove(player);
-    }
-
-    public void coolDown(Player player, float sec) {
-        if(!isReloading(player)) super.coolDown(player, sec);
     }
 
     public int getAmmo(ItemStack itemStack) {
@@ -125,11 +124,11 @@ public class Gun extends Weapon {
     }
 
     public float getDamage(ItemStack itemStack) {
-        return (float) getValue(itemStack, "damage");
+        return (float) getValue(itemStack, "damage") / 5;
     }
 
     public ItemStack setDamage(ItemStack itemStack, int set) {
-        return setValue(itemStack, "damage", set);
+        return setValue(itemStack, "damage", set * 5);
     }
 
     public float getReloadingTime() {

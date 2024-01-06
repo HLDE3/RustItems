@@ -7,13 +7,15 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Icon {
-    private int x, y;
+    private int slot;
     private ItemStack itemStack;
+    public Icon(ItemStack itemStack, int slot) {
+        this.itemStack = itemStack;
+        setSlot(slot);
+    }
 
     public Icon(ItemStack itemStack, int x, int y) {
-        this.itemStack = itemStack;
-        setX(x);
-        setY(y);
+        this(itemStack, x + y * 9);
     }
 
     public Icon(Material material, String name, ArrayList<String> lore, int x, int y) {
@@ -22,25 +24,30 @@ public class Icon {
         setLore(lore);
     }
 
-    public int getY() {
-        return y;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
+    public void setSlot(int slot) {
+        this.slot = slot;
     }
 
     public int getSlot() {
-        return getX() + getY() * 9;
+        return slot;
     }
+
+    public int getY() {
+        return getSlot() / 9;
+    }
+
+    public int getX() {
+        return getSlot() % 9;
+    }
+
+    public void setX(int x) {
+        this.setSlot(getY() + x);
+    }
+
+    public void setY(int y) {
+        this.setSlot(getX() + y * 9);
+    }
+
 
     public ItemStack getItemStack() {
         return itemStack;
